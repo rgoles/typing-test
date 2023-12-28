@@ -1,45 +1,51 @@
-// span text div = .container
-// input field text = #inputField
+async function fetchWords(count) {
+    const response = await fetch(`https://random-word-api.herokuapp.com/word?number=${count}`);
+    const data = await response.json();
+    return data;
+}
 
-// TODO: Split or slice a word into letters and check letter by letter if user input is correct and color the letter by letter accordingly
-
-// take 10 words from array and show them in span
-
-const wordsArray = ["apple", "banana", "cat", "dog", "elephant", "flower", "guitar", "happy", "island", "jazz", "kite", "lamp", "moon", "notebook", "orange", "piano", "queen", "rainbow", "sunshine", "tree", "umbrella", "violet", "watermelon", "xylophone", "yellow", "zebra", "airplane", "butterfly", "chocolate", "dolphin", "envelope", "fireworks", "garden", "happiness", "ice cream", "jungle", "koala", "lighthouse", "mountain", "nest", "ocean", "parrot", "quilt", "rocket", "sunny", "trampoline", "unicorn", "volcano", "whale", "xylophone", "yoga", "zeppelin"];
+async function generateWordArray() {
+    const wordCount = 2; // Change this to the number of words you want
+    const words = await fetchWords(wordCount);
+    return words;
+}
 
 $(document).ready(function () {
-
-
     let randomWords = [];
-    for (let i = 0; i < 5; i++) {
-        let randomWord = wordsArray[Math.floor(Math.random() * wordsArray.length)];
-        randomWords.push(randomWord);
-    }
+    let currentWordIndex = 0;
 
-    $(".container").empty();
-    randomWords.map(function (word) {
-        $("<span>").attr('id', word).text(word + ' ').appendTo(".container");
+    generateWordArray().then(wordsArray => {
+        console.log(wordsArray);
+
+        for (let i = 0; i < wordsArray.length; i++) {
+            $("<span>").attr('id', `word${i}`).text(wordsArray[i] + ' ').appendTo(".container");
+        }
+
+        randomWords = wordsArray;
     });
 
     $("#inputField").keypress(function (e) {
+        if (e.which == 13 || e.which == 32) {
+            e.preventDefault();
+            let userInput = $("#inputField").val().trim();
 
-        if (e.which == 13) {
-            let userInput = $("#inputField").val()
-            console.log(userInput)
-            $('#inputField').val('')
+            if (currentWordIndex + 1 < randomWords.length && userInput === randomWords[currentWordIndex]) {
+                $(`#word${currentWordIndex + 1}`).css('color', 'blue');
+            }
 
-            if (userInput === randomWords[0]) {
-                console.log('match')
-                $(`#${randomWords}`).css('color', 'green')
-                randomWords.shift()
-            } else if (userInput !== randomWords[0] && userInput !== randomWords) {
-                console.log(`${randomWords} nije match`)
-                $(`#${randomWords}`).css('color', 'red')
+            if (userInput === randomWords[currentWordIndex]) {
+                $(`#word${currentWordIndex}`).css('color', 'green');
+                currentWordIndex++;
+
+                if (currentWordIndex === randomWords.length) {
+                    console.log('YOU WIN');
+                    alert('WINNER')
+                }
+            } else {
+                $(`#word${currentWordIndex}`).css('color', 'red');
             }
-            if (randomWords.length === 0) {
-                console.log('YOU WIN')
-            }
-            console.log(randomWords)
+
+            $('#inputField').val('');
         }
-    })
+    });
 });
