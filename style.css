@@ -1,0 +1,27 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+main {
+  width: 100%;
+  height: 20rem;
+  display: flex;
+}
+
+.inputDiv {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.inputDiv .container {
+  margin-bottom: 5rem;
+}
+
+#inputField {
+  width: 10%;
+  height: 15%;
+}
+
+/*# sourceMappingURL=style.css.map */
